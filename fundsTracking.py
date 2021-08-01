@@ -22,7 +22,7 @@ if __name__ == "__main__":
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
 
-    for i in len(links):
+    for i in range(len(links)):
         if pd.isnull(links[i]):
             raised.append(0)
             continue
