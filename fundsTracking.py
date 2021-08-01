@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # parse through links
     for i in usrList:
-        # skip ones that fail
+        # skip ones that don't exist
         if pd.isnull(links[i]):
             raised.append(0)
             continue
