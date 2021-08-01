@@ -20,8 +20,18 @@ if __name__ == "__main__":
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
 
+    # ask user which rows they'd like done
+    usrIn = input("Press ENTER to search all, or provide a list of indices separated by spaces you'd like to search (this number is the row on the tracking sheet minus 2): ")
+    usrList = usrIn.split()
+    usrList = list(map(int, usrList))
+    print("You entered:")
+    print(usrList)
+    if(len(usrList) == 0):
+        print("Searching all links . . .")
+        usrList = range(len(links))
+
     # parse through links
-    for i in range(len(list)):
+    for i in usrList:
         # skip ones that fail
         if pd.isnull(links[i]):
             raised.append(0)
@@ -45,7 +55,7 @@ if __name__ == "__main__":
             raised.append(foundNum[0])
         else:
             raised.append(0)
-        # print(raised[i]) # debug
+        print("Found: " + str(raised[i]) + " on link: " + str(i)) # debug
         driver.quit() # close chrome
     print(raised) # debug
 
