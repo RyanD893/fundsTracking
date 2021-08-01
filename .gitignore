@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 chromedriver.exe
+raised.csv
+test.py
