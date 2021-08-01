@@ -15,10 +15,7 @@ if __name__ == "__main__":
     
     # create list of raised amount
     raised = []
-    
-    # chrome options 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
+
 
     # ask user which rows they'd like done
     usrIn = input("Press ENTER to search all, or provide a list of indices separated by spaces you'd like to search (this number is the row on the tracking sheet minus 2): ")
@@ -29,6 +26,10 @@ if __name__ == "__main__":
     if(len(usrList) == 0):
         print("Searching all links . . .")
         usrList = range(len(links))
+    
+    # chrome options 
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
 
     # parse through links
     for i in usrList:
