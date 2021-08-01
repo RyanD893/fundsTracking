@@ -46,17 +46,19 @@ if __name__ == "__main__":
         found = soup.find_all("strong", {"class":"dd-thermo-raised"})
         # skip if not found to prevent errors
         if(len(found) == 0):
+            print('Failed to find in html on link:' + str(i)) # debug
             raised.append(0)
             continue
         # convert to number
         foundNum = found[0].text
-        foundNum = re.findall(r'[0-9][0-9,]+', foundNum)
+        foundNum = re.findall(r'[0-9,]+', foundNum)
         # add to list of raised amount
-        if foundNum:
+        if len(foundNum) > 0:
             raised.append(foundNum[0])
+            print("Found: " + str(raised[i]) + " on link: " + str(i)) # debug
         else:
             raised.append(0)
-        print("Found: " + str(raised[i]) + " on link: " + str(i)) # debug
+            print('Failed to find regex on link:' + str(i)) # debug
         driver.quit() # close chrome
     print(raised) # debug
 
