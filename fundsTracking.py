@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import re
+import math
 
 if __name__ == "__main__":
     # open excel as panda data frame
@@ -21,16 +22,21 @@ if __name__ == "__main__":
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
 
-
-    for i in range(len(links)):
-        if(links[i] == ""):
+    for i in len(links):
+        if pd.isnull(links[i]):
+            raised.append(0)
             continue
         driver = webdriver.Chrome('chromedriver.exe', options=chrome_options)
         driver.get(links[i])
         content = driver.page_source
         soup = BeautifulSoup(content, "html.parser")
-        found = soup.find("strong", {"class":"dd-thermo-raised"})
-        foundNum = re.findall(r'\d+', found.text)
+        found = soup.find_all("strong", {"class":"dd-thermo-raised"})
+        if(len(found) == 0):
+            raised.append(0)
+            continue
+        # foundNum = found.text.replace(',', '')
+        foundNum = found[0].text
+        foundNum = re.findall(r'[0-9][0-9,]+', foundNum)
         if foundNum:
             raised.append(foundNum[0])
         else:
@@ -38,4 +44,6 @@ if __name__ == "__main__":
         print(raised[i])
         driver.quit()
     print(raised)
-    
+
+    df = pd.DataFrame(raised, columns=["raised"])
+    df.to_csv('raised.csv', index=False)
