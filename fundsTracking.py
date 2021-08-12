@@ -37,18 +37,24 @@ if __name__ == "__main__":
         if pd.isnull(links[i]):
             raised.append(0)
             continue
-        # open page in chrome headless
-        driver = webdriver.Chrome('chromedriver.exe', options=chrome_options)
-        driver.get(links[i])
-        # seach the html for the class containing raised amount
-        content = driver.page_source
-        soup = BeautifulSoup(content, "html.parser")
-        found = soup.find_all("strong", {"class":"dd-thermo-raised"})
-        # skip if not found to prevent errors
-        if(len(found) == 0):
-            print('Failed to find in html on link:' + str(i)) # debug
-            raised.append(0)
-            continue
+        # keep trying
+        failed = 0
+        while(failed == 0):
+            failed = 1            
+            # open page in chrome headless
+            driver = webdriver.Chrome('chromedriver.exe', options=chrome_options)
+            driver.get(links[i])
+            # seach the html for the class containing raised amount
+            content = driver.page_source
+            soup = BeautifulSoup(content, "html.parser")
+            found = soup.find_all("strong", {"class":"dd-thermo-raised"})
+            # skip if not found to prevent errors
+            if(len(found) == 0):
+                print('Failed to find in html on link:' + str(i)) # debug
+                # raised.append(0)
+                failed = 0
+                continue
+            driver.quit() # close chrome
         # convert to number
         foundNum = found[0].text
         foundNum = re.findall(r'[0-9,]+', foundNum)
@@ -59,7 +65,6 @@ if __name__ == "__main__":
         else:
             raised.append(0)
             print('Failed to find regex on link:' + str(i)) # debug
-        driver.quit() # close chrome
     print(raised) # debug
 
     # print to csv for copying
