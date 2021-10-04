@@ -6,7 +6,7 @@ import threading
 
 links = []
 raised = []
-chrome_options = webdriver.ChromeOptions()
+# chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_argument("--headless")
 
 class getRaised(threading.Thread):
@@ -17,8 +17,12 @@ class getRaised(threading.Thread):
 
     def run(self):
         global raised
+        print(f"starting thread {self.i}")
+        # chrome options 
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
         # skip ones that don't exist
-        if pd.isnull(links[i]):
+        if pd.isnull(links[self.i]):
             # raised.append(0)
             return
                 # keep trying
@@ -27,14 +31,14 @@ class getRaised(threading.Thread):
             failed = 1            
             # open page in chrome headless
             driver = webdriver.Chrome('chromedriver.exe', options=chrome_options)
-            driver.get(links[i])
+            driver.get(links[self.i])
             # seach the html for the class containing raised amount
             content = driver.page_source
             soup = BeautifulSoup(content, "html.parser")
             found = soup.find_all("strong", {"class":"dd-thermo-raised"})
             # skip if not found to prevent errors
             if(len(found) == 0):
-                print('Failed to find in html on link:' + str(i)) # debug
+                print('Failed to find in html on link:' + str(self.i)) # debug
                 # raised.append(0)
                 failed = 0
                 continue
@@ -44,11 +48,11 @@ class getRaised(threading.Thread):
         foundNum = re.findall(r'[0-9,]+', foundNum)
         # add to list of raised amount
         if len(foundNum) > 0:
-            raised[i] = foundNum[0]
-            print("Found: " + str(raised[i]) + " on link: " + str(i)) # debug
+            raised[self.i] = foundNum[0]
+            print("Found: " + str(raised[self.i]) + " on link: " + str(self.i)) # debug
         else:
             # raised.append(0)
-            print('Failed to find regex on link:' + str(i)) # debug
+            print('Failed to find regex on link:' + str(self.i)) # debug
 
         return
 
@@ -76,16 +80,17 @@ if __name__ == "__main__":
     #     print("Searching all links . . .")
     #     usrList = range(len(links))
     
-    # # chrome options 
-    # chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
+    
 
     # parse through links
+    threads = []
     for i in range(len(raised)):
         # create thread
-        raisedThread = getRaised(i)
-        raisedThread.start()
-        raisedThread.join()
+        threads.append(getRaised(i))
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
         # # skip ones that don't exist
         # if pd.isnull(links[i]):
