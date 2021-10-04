@@ -5,6 +5,12 @@ import re
 import threading
 import time
 
+# =========================================== #
+# If chromedriver is incorrect version,
+# download new exe, and place in directory.
+# https://chromedriver.chromium.org/downloads
+# =========================================== #
+
 links = []
 raised = []
 
