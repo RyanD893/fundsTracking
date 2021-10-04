@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import re
 import threading
+import time
 
 links = []
 raised = []
@@ -89,6 +90,7 @@ if __name__ == "__main__":
         threads.append(getRaised(i))
     for t in threads:
         t.start()
+        time.sleep(.1)
     for t in threads:
         t.join()
 
