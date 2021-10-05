@@ -77,7 +77,7 @@ if __name__ == "__main__":
         threads.append(getRaised(i))
     for t in threads:
         t.start()
-        time.sleep(.1)
+        time.sleep(.5)
     for t in threads:
         t.join()
 
